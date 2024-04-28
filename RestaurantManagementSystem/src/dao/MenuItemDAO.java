@@ -38,6 +38,23 @@ public class MenuItemDAO {
         }
         return menuItems;
     }
+    
+    public MenuItem getMenuItemById(int id) throws SQLException {
+        String query = "SELECT * FROM menuitems WHERE id = ?";
+        try (Connection conn = DriverManager.getConnection(url, username, password);
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()) {
+            	MenuItem menuitem = new MenuItem();
+            	menuitem.setId(resultSet.getInt("id"));
+            	menuitem.setName(resultSet.getString("foodname"));
+                menuitem.setCategory(resultSet.getString("category"));
+                menuitem.setPrice(resultSet.getDouble("price"));
+            }
+        }
+        return null;
+    }
 
     public void addMenuItem(MenuItem menuItem) {
         String query = "INSERT INTO menuitems (foodname, category, price) VALUES (?, ?, ?)";
