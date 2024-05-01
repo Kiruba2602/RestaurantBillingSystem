@@ -22,7 +22,7 @@ public class MainFrame {
         scanner = new Scanner(System.in);
     }
 
-    public void displayMenu() {
+    public void displayMenu() throws SQLException {
         boolean done = false;
         while (!done) {
             System.out.println("\nMenu:");
@@ -73,13 +73,15 @@ public class MainFrame {
         }
     }
 
-    private void processOrder() {
+    private void processOrder() throws SQLException {
+    	System.out.println("Enter customer ID: ");
+    	int customerID = scanner.nextInt();
         System.out.print("Enter customer name: ");
         String customerName = scanner.nextLine();
         System.out.print("Enter customer phone number: ");
         String contact = scanner.nextLine();
 
-        Customer customer = customerDAO.getCustomers();
+        Customer customer = customerDAO.getCustomerById(customerID);
         if (customer == null) {
             customer = new Customer(0, customerName, contact);
             customerDAO.addCustomer(customer);
@@ -95,7 +97,7 @@ public class MainFrame {
         int menuItemId = scanner.nextInt();
         scanner.nextLine(); // consume newline
 
-        MenuItem menuItem = MenuItemDAO.getMenuItemById(menuItemId);
+        MenuItem menuItem = menuItemDAO.getMenuItemById(menuItemId);
         if (menuItem == null) {
             System.out.println("Invalid menu item ID.");
             return;
@@ -105,10 +107,10 @@ public class MainFrame {
         int quantity = scanner.nextInt();
         scanner.nextLine(); // consume newline
 
-        Order order = new Order(customer, menuItem, quantity);
+        Order order = new Order(0, customer.getId(), 0.0, null, customer, null);
         orderDAO.addOrder(order);
 
-        Bill bill = new Bill(order);
+        Bill bill = new Bill(0, order, quantity, 0);
         billDAO.addBill(bill);
 
         System.out.println("Order processed successfully.");
